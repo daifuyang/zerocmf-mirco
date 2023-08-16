@@ -39,3 +39,8 @@
 | ☀️ [app/unit/cart](app/unit/cart)                       | 购物车系统              |
 | ☀️ [app/unit/order](app/unit/order)                     | 订单系统               |
 | ☀️ [app/unit/finance/payment](app/unit/finance/payment) | 支付系统               |
+
+
+### 鸣谢：
+- [gp-zero](https://github.com/zeromicro/go-zero)
+- [zeromall](https://github.com/zeromicro/zeromall)
