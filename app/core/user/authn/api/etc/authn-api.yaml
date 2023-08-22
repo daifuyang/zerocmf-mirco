@@ -1,0 +1,19 @@
+Name: authn-api
+Host: 0.0.0.0
+Port: 10112
+
+Mysql:
+  Username: root
+  Password: '123456'
+  Host: localhost
+  port: 3306
+  DbName: zerocmf_user
+  charset: utf8mb4
+  Collate: utf8mb4_unicode_ci
+  ParseTime: true
+  AuthCode: zerocmf
+
+Oauth:
+  ClientID: 'zerocmf_user'
+  ClientSecret: "zerocmf_user"
+  RedirectURL: "http://localhost:10112"

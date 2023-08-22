@@ -1,10 +1,47 @@
 # zerocmf内容管理框架
 
-- [] 基于 `go` + `go-zero` + `gRPC`, 以`微服务`方式实现的通用管理平台.
-- [] 目标:
-    - [] 综合社区`最佳实践`, 力求`产品级`项目, 而不是 `demo 玩具`.
-    - [] 通用业务单元: 可以自由组合使用.
-- [] 文档:
+- [ ] 基于 `go` + `go-zero` + `gRPC`, 以`微服务`方式实现的通用管理平台.
+- [ ] 目标:
+    - [ ] 综合社区`最佳实践`, 力求`产品级`项目, 而不是 `demo 玩具`.
+    - [ ] 通用业务单元: 可以自由组合使用.
+- [ ] 文档:
+
+## 在线体验
+
+## 快速开始
+
+### 系统需求
+
+#### go
+
+- go 1.18+
+- go-zero 1.5+
+
+#### Cli Tool
+
+- [go-task](https://taskfile.dev/#/installation)
+- goctl
+
+#### 中间件
+
+> 核心依赖:
+
+- mysql8.0+: 数据库
+- redis: 缓存
+- go-queue: 消息队列
+
+> 监控/告警/日志:
+
+- Prometheus: 监控
+- Jaeger: 分布式追踪
+- Kibana: 日志
+- Grafana: 图表
+
+> 网关
+- apisix
+
+> 服务发现/注册/配置中心
+- etcd
 
 ## WIP:
 
@@ -30,7 +67,6 @@
 | [app/core/queue](app/core/queue)           | 基础队列服务       |
 | [app/core/log](app/core/log)               | 日志记录         |
 
-
 ### 服务矩阵:
 
 | [业务单元(app/unit)](app/unit)                              | 说明                 |
@@ -40,7 +76,7 @@
 | ☀️ [app/unit/order](app/unit/order)                     | 订单系统               |
 | ☀️ [app/unit/finance/payment](app/unit/finance/payment) | 支付系统               |
 
-
 ### 鸣谢：
+
 - [gp-zero](https://github.com/zeromicro/go-zero)
 - [zeromall](https://github.com/zeromicro/zeromall)

@@ -1,0 +1,13 @@
+go 1.20
+
+use (
+	./app/core/log
+	./app/core/log/rpc
+	./app/core/user/admin
+	./app/core/user/admin/rpc
+	./app/core/user/authn
+	./app/core/user/authn/api
+	./app/std
+	./app/unit/demo
+	./app/unit/demo/rpc
+)

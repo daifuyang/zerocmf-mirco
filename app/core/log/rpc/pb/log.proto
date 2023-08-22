@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package core.log.rpc.v1;
+option go_package = "./pb";
+
+message SystemLogReq {
+  string appName = 1;
+  string logLevel = 2;
+  string method = 3;
+  string message = 4;
+}
+
+message SystemLogResp {
+  bool success = 1;
+  string message = 2;
+}
+
+service Service {
+  // 系统日志记录
+  rpc LogSystem(SystemLogReq) returns (SystemLogResp);
+}

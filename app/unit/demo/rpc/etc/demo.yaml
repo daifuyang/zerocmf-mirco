@@ -1,0 +1,35 @@
+Name: demo.rpc
+ListenOn: 0.0.0.0:8080
+Mode: dev # 开发模式
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: demo.rpc
+
+# 日志相关
+Log:
+  Mode: file
+  Path: data/logs
+  KeepDays: 7
+  MaxSize: 2
+
+# mysql配置
+Mysql:
+  Username: root
+  Password: '123456'
+  Host: localhost
+  port: 3306
+  DbName: demo
+  charset: utf8mb4
+  Collate: utf8mb4_unicode_ci
+  ParseTime: true
+
+# 缓存服务
+Cache:
+- Host: localhost:6379
+
+# 日志服务
+LogRpc:
+  Timeout: 30000
+  Etcd:
+    Key: app.core.log.rpc

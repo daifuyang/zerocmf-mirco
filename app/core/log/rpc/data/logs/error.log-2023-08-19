@@ -1,0 +1,9 @@
+{"@timestamp":"2023-08-19T14:36:32.380+08:00","caller":"sqlx/utils.go:140","content":"stmt: insert into `system_log` (`app_name`,`logLevel`,`method`,`message`) values ('main.rpc', 'error', 'Error occurred in function app/core/user/admin/rpc/internal/logic.(*AdminLoginLogic).AdminLogin at /Users/return/workspace/mygo/zerocmf-micro/app/core/user/admin/rpc/internal/logic/adminloginlogic.go:60\\n', 'error'), error: Error 1054 (42S22): Unknown column 'method' in 'field list'","level":"error","span":"c99cc1f63d61756a","trace":"c9e84617b916441067fff3e476b83e19"}
+{"@timestamp":"2023-08-19T20:28:08.213+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T20:47:30.511+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:01:59.383+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:19:31.201+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:39:00.881+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:02:47.044+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:07:16.881+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:26:07.537+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}

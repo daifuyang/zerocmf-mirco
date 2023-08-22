@@ -4,11 +4,8 @@ package handler
 import (
 	"net/http"
 
-	auth "user/authn/api/internal/handler/auth"
-	quick "user/authn/api/internal/handler/quick"
-	register "user/authn/api/internal/handler/register"
-	security "user/authn/api/internal/handler/security"
-	"user/authn/api/internal/svc"
+	oauth "app/core/user/authn/api/internal/handler/oauth"
+	"app/core/user/authn/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -18,93 +15,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/quick/sms",
-				Handler: quick.AuthBySmsCodeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/quick/email",
-				Handler: quick.AuthByEmailCodeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/quick/oauth",
-				Handler: quick.AuthByOauthHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/send/sms",
-				Handler: quick.SendSmsCodeHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/send/email",
-				Handler: quick.SendEmailCodeHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/api/v1/user/authn"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/register",
-				Handler: register.RegisterHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/register/check",
-				Handler: register.CheckAccountHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/register/verify",
-				Handler: register.VerifyHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/api/v1/user/authn"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
 				Path:    "/login",
-				Handler: auth.LoginHandler(serverCtx),
+				Handler: oauth.LoginHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/logout",
-				Handler: auth.LogoutHandler(serverCtx),
+				Path:    "/refresh",
+				Handler: oauth.RefreshHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/token",
+				Handler: oauth.TokenHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/validation",
+				Handler: oauth.ValidationHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/api/v1/user/authn"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/captcha",
-				Handler: security.CaptchaHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/mfa/add",
-				Handler: security.MfaAddHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/mfa/verify",
-				Handler: security.MfaVerifyHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/mfa/remove",
-				Handler: security.MfaRemoveHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/api/v1/user/authn/security"),
+		rest.WithPrefix("/api/authn"),
 	)
 }

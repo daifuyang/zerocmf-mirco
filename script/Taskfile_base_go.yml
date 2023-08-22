@@ -1,0 +1,43 @@
+version: '3'
+
+################################################################################################
+#
+# ref: https://goproxy.io/zh/
+#
+################################################################################################
+
+tasks:
+  install:
+    cmds:
+      - go get -u -v github.com/cosmtrek/air
+      - go install github.com/BurntSushi/toml/cmd/tomlv@master # https://pre-commit.com/hooks.html
+
+  install-go-zero:
+    cmds:
+      - go get -u github.com/zeromicro/go-zero
+      - GO111MODULE=on go install github.com/zeromicro/go-zero/tools/goctl@latest
+
+  install-proto:
+    cmds:
+      - goctl env check --install --verbose --force
+
+  ################################################################################################
+
+  version:
+    cmds:
+      - go version
+
+  init:
+    cmds:
+      - task: tidy
+
+  tidy:
+    cmds:
+      - go mod tidy -v
+
+  get:
+    cmds:
+      - go get -u -v github.com/zeromicro/go-zero
+
+  ################################################################################################
+

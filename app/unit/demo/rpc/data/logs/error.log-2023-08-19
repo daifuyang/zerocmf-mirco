@@ -1,0 +1,8 @@
+{"@timestamp":"2023-08-19T20:28:08.214+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T20:47:30.505+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:01:59.351+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:19:31.203+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T21:39:00.879+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:02:47.043+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:07:16.875+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}
+{"@timestamp":"2023-08-19T23:26:07.520+08:00","caller":"discov/publisher.go:178","content":"etcd publisher revoke: etcdserver: requested lease not found","level":"error"}

@@ -1,0 +1,31 @@
+type (
+	LoginReq {
+		UserId int64 `json:"userId"`
+	}
+
+	RefreshReq {
+		RefreshToken string `json:"refreshToken,optional"`
+	}
+
+	ValidationReq {
+	}
+)
+
+@server(
+	group: oauth
+	prefix: /api/authn
+)
+
+service authn-api {
+	@handler Login
+	post /login (LoginReq)
+
+	@handler Refresh
+	post /refresh (RefreshReq)
+
+	@handler Token
+	post /token
+
+	@handler Validation
+	post /validation (ValidationReq)
+}

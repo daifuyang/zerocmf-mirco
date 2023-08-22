@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package user.admin.rpc.v1;
+option go_package="./pb";
+
+message loginReq {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResp {
+  bool success = 1;
+  string message = 2;
+}
+
+service Service {
+
+//  管理员登录
+  rpc AdminLogin (loginReq) returns (LoginResp);
+
+//  添加用户
+
+//  查看用户
+
+//  修改用户
+
+//  删除用户
+
+}

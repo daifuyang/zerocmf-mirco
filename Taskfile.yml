@@ -1,0 +1,104 @@
+version: '3'
+
+################################################################################################
+#
+# ref:
+#   - https://taskfile.dev/#/usage
+#
+################################################################################################
+
+
+#
+# sub namespace: https://taskfile.dev/#/usage?id=including-other-taskfiles
+#
+includes:
+  os:
+    taskfile: ./script/Taskfile_{{OS}}.yml
+    dir: ./script
+
+  base:
+    taskfile: ./script/Taskfile_base.yml
+    dir: .
+
+  go:
+    taskfile: ./script/Taskfile_base_go.yml
+    dir: .
+
+  #
+  # 待测试的服务根目录:
+  #
+  authn:
+    taskfile: app/core/user/authn/
+    dir: app/core/user/authn/
+
+  sms:
+    taskfile: app/core/notification/sms
+    dir: app/core/notification/sms
+
+  system:
+    taskfile: app/core/user/system
+    dir: app/core/user/system
+
+################################################################################################
+
+#
+# global vars: https://taskfile.dev/#/usage?id=variables
+#
+vars:
+  VAR1: "some-var"
+
+#
+# global env: https://taskfile.dev/#/usage?id=environment-variables
+#
+env:
+  ENV1: testing-env
+
+# env file:
+dotenv:
+  - .env
+
+################################################################################################
+
+#
+# task groups: https://taskfile.dev/#/usage?id=task-directory
+#
+tasks:
+  default:
+    cmds:
+      - task: init
+      - task: run
+
+
+  init:
+    cmds:
+      - cp .env.local .env
+      - task: os:init
+      - task: go:init
+
+  tidy:
+    cmds:
+      #      - go mod tidy -v
+      - task: app:demo:tidy
+      - task: app:queue:tidy
+      - go work sync
+
+  update:
+    cmds:
+      - export GOPROXY=https://goproxy.cn; go get -u -v github.com/better-go/pkg@v0.1.17
+      - echo $GOPROXY
+  #      - export GOPROXY=https://goproxy.cn; go get -u -v github.com/tal-tech/go-zero@v1.2.0
+  #      - export GOPROXY=https://goproxy.cn; go get -u -v github.com/tal-tech/go-zero@v1.1.10
+
+  version:
+    cmds:
+      - task: os:version
+      - task: go:version
+
+  ################################################################################################
+
+  run:
+    cmds:
+#      - task: sms:run:rpc
+#      - task: authn:run:api
+      - task: system:run:rpc
+      - task: system:run:api
