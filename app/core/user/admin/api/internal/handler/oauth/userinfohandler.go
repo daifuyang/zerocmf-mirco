@@ -1,23 +1,17 @@
 package oauth
 
 import (
-	"app/core/user/authn/api/internal/logic/oauth"
-	"app/core/user/authn/api/internal/svc"
-	"app/core/user/authn/api/internal/types"
+	"app/core/user/admin/api/internal/logic/oauth"
+	"app/core/user/admin/api/internal/svc"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )
 
-func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func UserInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.LoginReq
-		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-			return
-		}
 
-		l := oauth.NewLoginLogic(r, svcCtx)
-		result := l.Login(&req)
+		l := oauth.NewUserInfoLogic(r, svcCtx)
+		result := l.UserInfo()
 
 		response := result.Response()
 

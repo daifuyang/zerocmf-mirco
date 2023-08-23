@@ -3,20 +3,24 @@ syntax = "proto3";
 package user.admin.rpc.v1;
 option go_package="./pb";
 
-message loginReq {
-  string username = 1;
-  string password = 2;
+message adminShowReq {
+  int64 userId = 1;
+  string username = 2;
 }
 
 message LoginResp {
   bool success = 1;
   string message = 2;
+  string salt = 3;
+  int64 userId = 4;
+  string username = 5;
+  string password = 6;
 }
 
 service Service {
 
-//  管理员登录
-  rpc AdminLogin (loginReq) returns (LoginResp);
+//  获取单个管理员
+  rpc AdminShow (adminShowReq) returns (LoginResp);
 
 //  添加用户
 

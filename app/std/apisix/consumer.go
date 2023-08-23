@@ -1,14 +1,14 @@
 package apisix
 
 import (
+	"app/std/apisix/plugins/authentication"
+	"app/std/util"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"reflect"
 	"strconv"
 	"strings"
-	"zerocmf/common/bootstrap/apisix/plugins/authentication"
-	"zerocmf/common/bootstrap/util"
 )
 
 type (
@@ -59,6 +59,13 @@ func WithJwtAuth(jwtPlugin authentication.JwtAuth) pluginOption {
 	return func(p *plugin) {
 		p.Name = "jwt-auth"
 		pluginFunc(p, jwtPlugin)
+	}
+}
+
+func WithKeyAuth(keyPlugin authentication.KeyAuth) pluginOption {
+	return func(p *plugin) {
+		p.Name = "key-auth"
+		pluginFunc(p, keyPlugin)
 	}
 }
 

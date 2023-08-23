@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `admin_user`
     `mobile_country` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '手机号国家码',
     `nick_name`      varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' comment '昵称',
     PRIMARY KEY (`id`),
+    UNIQUE idx_username (username),
     KEY `idx_updated_at` (`updated_at`),
     KEY `idx_created_at` (`created_at`)
 

@@ -4,6 +4,7 @@ use (
 	./app/core/log
 	./app/core/log/rpc
 	./app/core/user/admin
+	./app/core/user/admin/api
 	./app/core/user/admin/rpc
 	./app/core/user/authn
 	./app/core/user/authn/api

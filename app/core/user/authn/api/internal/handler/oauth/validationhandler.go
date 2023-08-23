@@ -16,7 +16,7 @@ func ValidationHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := oauth.NewValidationLogic(r, svcCtx)
+		l := oauth.NewValidationLogic(w, r, svcCtx)
 		result := l.Validation(&req)
 
 		response := result.Response()

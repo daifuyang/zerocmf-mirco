@@ -24,7 +24,8 @@ type oauth struct {
 type Config struct {
 	ClientID     string
 	ClientSecret string
-	RedirectURL  string
+	RedirectURL  string `json:",optional"`
+	AccessSecret string
 	Database     database.Mysql `json:",optional"`
 }
 
@@ -54,7 +55,7 @@ func NewServer(conf Config) *oauth {
 	// token memory store
 	manager.MapTokenStorage(mysqlStore)
 	// generate jwt access token
-	manager.MapAccessGenerate(generates.NewJWTAccessGenerate("", []byte("00000000"), jwt.SigningMethodHS512))
+	manager.MapAccessGenerate(generates.NewJWTAccessGenerate("", []byte(conf.AccessSecret), jwt.SigningMethodHS256))
 	clientStore := store.NewClientStore()
 	clientStore.Set(oauthConfig.ClientID, &models.Client{
 		ID:     oauthConfig.ClientID,

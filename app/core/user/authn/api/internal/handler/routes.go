@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	login "app/core/user/authn/api/internal/handler/login"
 	oauth "app/core/user/authn/api/internal/handler/oauth"
 	"app/core/user/authn/api/internal/svc"
 
@@ -15,9 +16,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: oauth.LoginHandler(serverCtx),
+				Path:    "/admin/login",
+				Handler: login.AdminLoginHandler(serverCtx),
 			},
+		},
+		rest.WithPrefix("/api/authn"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodPost,
 				Path:    "/refresh",

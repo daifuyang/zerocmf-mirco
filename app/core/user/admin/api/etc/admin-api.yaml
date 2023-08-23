@@ -1,16 +1,10 @@
-Name: authn-api
+Name: admin-api
 Host: 0.0.0.0
-Port: 10118
+Port: 10108
 
-Etcd:
-  Key: rpcServer
-  Hosts:
-    - localhost:2379
-
-UserAdminRpc:
-  Timeout: 30000
-  Etcd:
-    Key: app.user.admin.rpc
+Auth:
+  AccessSecret: "zerocmf2023"
+  AccessExpire: 24
 
 Mysql:
   Username: root
@@ -21,23 +15,16 @@ Mysql:
   charset: utf8mb4
   Collate: utf8mb4_unicode_ci
   ParseTime: true
-
-Auth:
-  AccessSecret: "zerocmf2023"
-
-Oauth:
-  ClientID: 'zerocmf_user'
-  ClientSecret: "zerocmf_user"
-  AccessSecret: 'zerocmf2023'
+  AuthCode: zerocmf
 
 Apisix:
   apiKey: edd1c9f034335f136f87ad84b625c8f1
   Host: localhost
-  Name: authn-api
+  Name: user-admin-api
   upstream:
     nodes:
       - host: 192.168.8.169
-        port: 10118
+        port: 10108
         weight: 1
     timeout:
       connect: 30
@@ -50,4 +37,3 @@ Apisix:
       idle_timeout: 60
       requests: 1000
       size: 320
-

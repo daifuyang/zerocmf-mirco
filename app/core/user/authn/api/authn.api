@@ -1,6 +1,7 @@
 type (
 	LoginReq {
-		UserId int64 `json:"userId"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 
 	RefreshReq {
@@ -12,14 +13,21 @@ type (
 )
 
 @server(
+	group: login
+	prefix: /api/authn
+)
+
+service authn-api {
+	@handler AdminLogin
+	post /admin/login (LoginReq)
+}
+
+@server(
 	group: oauth
 	prefix: /api/authn
 )
 
 service authn-api {
-	@handler Login
-	post /login (LoginReq)
-
 	@handler Refresh
 	post /refresh (RefreshReq)
 

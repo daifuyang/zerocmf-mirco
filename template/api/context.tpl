@@ -5,13 +5,13 @@ import (
 )
 
 type ServiceContext struct {
-	OauthConfig {{.config}}
+	Config {{.config}}
 	{{.middleware}}
 }
 
 func NewServiceContext(c {{.config}}) *ServiceContext {
 	return &ServiceContext{
-		OauthConfig: c,
+		Config: c,
 		{{.middlewareAssignment}}
 	}
 }

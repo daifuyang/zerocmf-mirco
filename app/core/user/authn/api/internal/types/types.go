@@ -2,7 +2,8 @@
 package types
 
 type LoginReq struct {
-	UserId int64 `json:"userId"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type RefreshReq struct {

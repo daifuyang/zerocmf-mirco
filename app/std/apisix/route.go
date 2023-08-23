@@ -1,28 +1,23 @@
 package apisix
 
 import (
+	"app/std/apisix/plugins/authentication"
+	"app/std/util"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"zerocmf/common/bootstrap/util"
 )
-
-type Meta struct {
-	Disable bool `json:"disable,omitempty"`
-}
-
-type JWTAuth struct {
-	Meta Meta `json:"_meta,omitempty"`
-}
 
 type ProxyRewrite struct {
 	RegexURI []string `json:"regex_uri,omitempty"`
 }
 
 type RoutePlugins struct {
-	JWTAuth      *JWTAuth      `json:"jwt-auth,omitempty"`
-	ProxyRewrite *ProxyRewrite `json:"proxy-rewrite,omitempty"`
+	JWTAuth      *authentication.JwtAuth     `json:"jwt-auth,omitempty"`
+	KeyAuth      *authentication.KeyAuth     `json:"key-auth,omitempty"`
+	ForwardAuth  *authentication.ForwardAuth `json:"forward-auth,omitempty"`
+	ProxyRewrite *ProxyRewrite               `json:"proxy-rewrite,omitempty"`
 }
 
 type Route struct {

@@ -1,18 +1,18 @@
 package apisix
 
 import (
+	"app/std/util"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"zerocmf/common/bootstrap/util"
 )
 
 type Apisix struct {
-	ApiKey   string   `json:"apiKey"`
-	Host     string   `json:"host"`
-	Name     string   `json:"name"`
-	Upstream Upstream `json:"upstream"`
+	ApiKey   string   `json:"apiKey,env=APISIX_APIKEY"`
+	Host     string   `json:"host,env=APISIX_HOST"`
+	Name     string   `json:"name,optional"`
+	Upstream Upstream `json:"upstream,optional"`
 }
 
 func (a Apisix) Register(routes []Route) (err error) {
@@ -35,10 +35,10 @@ func (a Apisix) Register(routes []Route) (err error) {
 		return err
 	}
 
-	err = a.jas()
-	if err != nil {
-		return err
-	}
+	//err = a.jas()
+	//if err != nil {
+	//	return err
+	//}
 
 	err = new(Route).Register(host, apikey, routes)
 	if err != nil {

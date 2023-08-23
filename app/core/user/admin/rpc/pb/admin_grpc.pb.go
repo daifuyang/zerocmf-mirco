@@ -19,15 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Service_AdminLogin_FullMethodName = "/user.admin.rpc.v1.Service/AdminLogin"
+	Service_AdminShow_FullMethodName = "/user.admin.rpc.v1.Service/AdminShow"
 )
 
 // ServiceClient is the client API for Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
-	// 管理员登录
-	AdminLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	// 获取单个管理员
+	AdminShow(ctx context.Context, in *AdminShowReq, opts ...grpc.CallOption) (*LoginResp, error)
 }
 
 type serviceClient struct {
@@ -38,9 +38,9 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
-func (c *serviceClient) AdminLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+func (c *serviceClient) AdminShow(ctx context.Context, in *AdminShowReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	out := new(LoginResp)
-	err := c.cc.Invoke(ctx, Service_AdminLogin_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Service_AdminShow_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +51,8 @@ func (c *serviceClient) AdminLogin(ctx context.Context, in *LoginReq, opts ...gr
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
-	// 管理员登录
-	AdminLogin(context.Context, *LoginReq) (*LoginResp, error)
+	// 获取单个管理员
+	AdminShow(context.Context, *AdminShowReq) (*LoginResp, error)
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -60,8 +60,8 @@ type ServiceServer interface {
 type UnimplementedServiceServer struct {
 }
 
-func (UnimplementedServiceServer) AdminLogin(context.Context, *LoginReq) (*LoginResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminLogin not implemented")
+func (UnimplementedServiceServer) AdminShow(context.Context, *AdminShowReq) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminShow not implemented")
 }
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
@@ -76,20 +76,20 @@ func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
 }
 
-func _Service_AdminLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginReq)
+func _Service_AdminShow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminShowReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).AdminLogin(ctx, in)
+		return srv.(ServiceServer).AdminShow(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Service_AdminLogin_FullMethodName,
+		FullMethod: Service_AdminShow_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).AdminLogin(ctx, req.(*LoginReq))
+		return srv.(ServiceServer).AdminShow(ctx, req.(*AdminShowReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -102,8 +102,8 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AdminLogin",
-			Handler:    _Service_AdminLogin_Handler,
+			MethodName: "AdminShow",
+			Handler:    _Service_AdminShow_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

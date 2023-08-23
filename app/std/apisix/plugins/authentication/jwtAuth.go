@@ -1,6 +1,7 @@
 package authentication
 
 type JwtAuth struct {
+	Meta                Meta   `json:"_meta,omitempty"`
 	Key                 string `json:"key"`
 	Secret              string `json:"secret,omitempty"`
 	PublicKey           string `json:"public_key,omitempty"`

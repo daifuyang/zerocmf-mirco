@@ -69,7 +69,7 @@ tasks:
   gen:api:
     cmds:
       #      - cd api; goctl api go --api api.api --dir . --style gozero
-      - goctl api go --api "./api/main.api" --dir="./api" --style gozero --home ../../../../template
+      - goctl api go --api "./api/admin.api" --dir="./api" --style gozero --home ../../../../template
 
   # 基于 sql， 生成 model CRUD 代码
   gen:model:

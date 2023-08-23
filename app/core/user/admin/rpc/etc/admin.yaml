@@ -1,5 +1,5 @@
-Name: main.rpc
-ListenOn: 0.0.0.0:10108
+Name: app.core.user.admin.rpc
+ListenOn: 0.0.0.0:10100
 Mode: dev
 AdminPassword: '123456' # 管理员默认密码
 
@@ -34,3 +34,4 @@ LogRpc:
   Timeout: 30000
   Etcd:
     Key: app.core.log.rpc
+

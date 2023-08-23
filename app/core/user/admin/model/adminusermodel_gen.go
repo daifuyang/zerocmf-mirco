@@ -22,7 +22,8 @@ var (
 	adminUserRowsExpectAutoSet   = strings.Join(stringx.Remove(adminUserFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	adminUserRowsWithPlaceHolder = strings.Join(stringx.Remove(adminUserFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
-	cacheAdminUserIdPrefix = "cache:adminUser:id:"
+	cacheAdminUserIdPrefix       = "cache:adminUser:id:"
+	cacheAdminUserUsernamePrefix = "cache:adminUser:username:"
 )
 
 type (
@@ -36,6 +37,7 @@ type (
 		Count(ctx context.Context) (int64, error)
 		Insert(ctx context.Context, data *AdminUser) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*AdminUser, error)
+		FindOneByUsername(ctx context.Context, username string) (*AdminUser, error)
 		Update(ctx context.Context, data *AdminUser) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -103,11 +105,17 @@ func (m *defaultAdminUserModel) OrderBy(orderBy string) *defaultAdminUserModel {
 	return m
 }
 func (m *defaultAdminUserModel) Delete(ctx context.Context, id int64) error {
+	data, err := m.FindOne(ctx, id)
+	if err != nil {
+		return err
+	}
+
 	adminUserIdKey := fmt.Sprintf("%s%v", cacheAdminUserIdPrefix, id)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
+	adminUserUsernameKey := fmt.Sprintf("%s%v", cacheAdminUserUsernamePrefix, data.Username)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, adminUserIdKey)
+	}, adminUserIdKey, adminUserUsernameKey)
 	return err
 }
 
@@ -128,21 +136,48 @@ func (m *defaultAdminUserModel) FindOne(ctx context.Context, id int64) (*AdminUs
 	}
 }
 
+func (m *defaultAdminUserModel) FindOneByUsername(ctx context.Context, username string) (*AdminUser, error) {
+	adminUserUsernameKey := fmt.Sprintf("%s%v", cacheAdminUserUsernamePrefix, username)
+	var resp AdminUser
+	err := m.QueryRowIndexCtx(ctx, &resp, adminUserUsernameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where `username` = ? AND deleted_at = 0 limit 1", adminUserRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, username); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultAdminUserModel) Insert(ctx context.Context, data *AdminUser) (sql.Result, error) {
 	adminUserIdKey := fmt.Sprintf("%s%v", cacheAdminUserIdPrefix, data.Id)
+	adminUserUsernameKey := fmt.Sprintf("%s%v", cacheAdminUserUsernamePrefix, data.Username)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, adminUserRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DeletedAt, data.Status, data.Desc, data.Salt, data.Password, data.Username, data.UsernameSn, data.Email, data.MobileNo, data.MobileCountry, data.NickName)
-	}, adminUserIdKey)
+	}, adminUserIdKey, adminUserUsernameKey)
 	return ret, err
 }
 
-func (m *defaultAdminUserModel) Update(ctx context.Context, data *AdminUser) error {
+func (m *defaultAdminUserModel) Update(ctx context.Context, newData *AdminUser) error {
+	data, err := m.FindOne(ctx, newData.Id)
+	if err != nil {
+		return err
+	}
+
 	adminUserIdKey := fmt.Sprintf("%s%v", cacheAdminUserIdPrefix, data.Id)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
+	adminUserUsernameKey := fmt.Sprintf("%s%v", cacheAdminUserUsernamePrefix, data.Username)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, adminUserRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.DeletedAt, data.Status, data.Desc, data.Salt, data.Password, data.Username, data.UsernameSn, data.Email, data.MobileNo, data.MobileCountry, data.NickName, data.Id)
-	}, adminUserIdKey)
+		return conn.ExecCtx(ctx, query, newData.DeletedAt, newData.Status, newData.Desc, newData.Salt, newData.Password, newData.Username, newData.UsernameSn, newData.Email, newData.MobileNo, newData.MobileCountry, newData.NickName, newData.Id)
+	}, adminUserIdKey, adminUserUsernameKey)
 	return err
 }
 

@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
+	"strconv"
 
 	"app/core/user/authn/api/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -36,10 +37,13 @@ func (l *TokenLogic) Token() (resp logic.Response) {
 	w := l.writer
 	r := l.header
 
+	redirectURL := "http://" + conf.Apisix.Host + ":" + strconv.Itoa(conf.Port)
+
 	oauthConf := oauth.Config{
 		ClientID:     conf.Oauth.ClientID,
 		ClientSecret: conf.Oauth.ClientSecret,
-		RedirectURL:  conf.Oauth.RedirectURL,
+		RedirectURL:  redirectURL,
+		AccessSecret: conf.Auth.AccessSecret,
 		Database:     conf.Mysql,
 	}
 

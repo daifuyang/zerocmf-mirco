@@ -1,4 +1,4 @@
-package logic
+package oauth
 
 import (
 	"app/std/net/http/logic"
@@ -6,21 +6,19 @@ import (
 	"net/http"
 
 	"app/core/user/admin/api/internal/svc"
-	"app/core/user/admin/api/internal/types"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ApiLogic struct {
+type UserInfoLogic struct {
 	logx.Logger
 	ctx    context.Context
 	header *http.Request
 	svcCtx *svc.ServiceContext
 }
 
-func NewApiLogic(header *http.Request, svcCtx *svc.ServiceContext) *ApiLogic {
+func NewUserInfoLogic(header *http.Request, svcCtx *svc.ServiceContext) *UserInfoLogic {
 	ctx := header.Context()
-	return &ApiLogic{
+	return &UserInfoLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		header: header,
@@ -28,8 +26,9 @@ func NewApiLogic(header *http.Request, svcCtx *svc.ServiceContext) *ApiLogic {
 	}
 }
 
-func (l *ApiLogic) Api(req *types.Request) (resp logic.Response) {
-	// todo: add your logic here and delete this line
-
+func (l *UserInfoLogic) UserInfo() (resp logic.Response) {
+	r := l.header
+	userId := r.Header.Get("X-User-ID")
+	resp.Success("hello admin", userId)
 	return
 }

@@ -22,8 +22,8 @@ func NewServiceServer(svcCtx *svc.ServiceContext) *ServiceServer {
 	}
 }
 
-// 管理员登录
-func (s *ServiceServer) AdminLogin(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
-	l := logic.NewAdminLoginLogic(ctx, s.svcCtx)
-	return l.AdminLogin(in)
+// 获取单个管理员
+func (s *ServiceServer) AdminShow(ctx context.Context, in *pb.AdminShowReq) (*pb.LoginResp, error) {
+	l := logic.NewAdminShowLogic(ctx, s.svcCtx)
+	return l.AdminShow(in)
 }

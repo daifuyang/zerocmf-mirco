@@ -13,12 +13,12 @@ import (
 )
 
 type (
-	LoginReq  = pb.LoginReq
-	LoginResp = pb.LoginResp
+	AdminShowReq = pb.AdminShowReq
+	LoginResp    = pb.LoginResp
 
 	Service interface {
-		// 管理员登录
-		AdminLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+		// 获取单个管理员
+		AdminShow(ctx context.Context, in *AdminShowReq, opts ...grpc.CallOption) (*LoginResp, error)
 	}
 
 	defaultService struct {
@@ -32,8 +32,8 @@ func NewService(cli zrpc.Client) Service {
 	}
 }
 
-// 管理员登录
-func (m *defaultService) AdminLogin(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+// 获取单个管理员
+func (m *defaultService) AdminShow(ctx context.Context, in *AdminShowReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	client := pb.NewServiceClient(m.cli.Conn())
-	return client.AdminLogin(ctx, in, opts...)
+	return client.AdminShow(ctx, in, opts...)
 }

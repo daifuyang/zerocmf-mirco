@@ -1,23 +1,23 @@
-package handler
+package login
 
 import (
-	"app/core/user/admin/api/internal/logic"
-	"app/core/user/admin/api/internal/svc"
-	"app/core/user/admin/api/internal/types"
+	"app/core/user/authn/api/internal/logic/login"
+	"app/core/user/authn/api/internal/svc"
+	"app/core/user/authn/api/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )
 
-func ApiHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func AdminLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.Request
+		var req types.LoginReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewApiLogic(r, svcCtx)
-		result := l.Api(&req)
+		l := login.NewAdminLoginLogic(r, svcCtx)
+		result := l.AdminLogin(&req)
 
 		response := result.Response()
 
