@@ -2,9 +2,15 @@ Name: admin-api
 Host: 0.0.0.0
 Port: 10108
 
-Auth:
-  AccessSecret: "zerocmf2023"
-  AccessExpire: 24
+Etcd:
+  Key: rpcServer
+  Hosts:
+    - localhost:2379
+
+UserAdminRpc:
+  Timeout: 30000
+  Etcd:
+    Key: app.user.admin.rpc
 
 Mysql:
   Username: root

@@ -11,12 +11,12 @@ import (
 
 type Config struct {
 	rest.RestConf
-	Etcd discov.EtcdConf `json:",optional,inherit"`
-	Auth struct {
+	Etcd         discov.EtcdConf `json:",optional,inherit"`
+	UserAdminRpc zrpc.RpcClientConf
+	Auth         struct {
 		AccessSecret string
 	}
-	Mysql        database.Mysql
-	Oauth        oauth.Config
-	UserAdminRpc zrpc.RpcClientConf
-	Apisix       apisix.Apisix
+	Mysql  database.Mysql
+	Oauth  oauth.Config
+	Apisix apisix.Apisix
 }

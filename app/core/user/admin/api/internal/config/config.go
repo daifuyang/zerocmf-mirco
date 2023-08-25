@@ -3,14 +3,15 @@ package config
 import (
 	"app/std/apisix"
 	"app/std/database"
+	"github.com/zeromicro/go-zero/core/discov"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
 	rest.RestConf
-	Mysql database.Mysql
-	Auth  struct {
-		AccessSecret string
-	}
-	Apisix apisix.Apisix
+	Etcd         discov.EtcdConf `json:",optional,inherit"`
+	UserAdminRpc zrpc.RpcClientConf
+	Mysql        database.Mysql
+	Apisix       apisix.Apisix
 }

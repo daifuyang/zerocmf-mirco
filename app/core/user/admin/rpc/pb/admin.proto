@@ -1,33 +1,37 @@
 syntax = "proto3";
 
 package user.admin.rpc.v1;
-option go_package="./pb";
+option go_package = "./pb";
 
 message adminShowReq {
   int64 userId = 1;
   string username = 2;
 }
 
-message LoginResp {
-  bool success = 1;
-  string message = 2;
+message LoginData  {
   string salt = 3;
   int64 userId = 4;
   string username = 5;
   string password = 6;
 }
 
+message LoginResp {
+  bool success = 1;
+  string message = 2;
+  LoginData Data = 3;
+}
+
 service Service {
 
-//  获取单个管理员
+  //  获取单个管理员
   rpc AdminShow (adminShowReq) returns (LoginResp);
 
-//  添加用户
+  //  添加用户
 
-//  查看用户
+  //  查看用户
 
-//  修改用户
+  //  修改用户
 
-//  删除用户
+  //  删除用户
 
 }

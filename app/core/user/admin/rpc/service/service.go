@@ -14,6 +14,7 @@ import (
 
 type (
 	AdminShowReq = pb.AdminShowReq
+	LoginData    = pb.LoginData
 	LoginResp    = pb.LoginResp
 
 	Service interface {

@@ -2,8 +2,6 @@ package login
 
 import (
 	userAdmin "app/core/user/admin/rpc/service"
-	"app/std/apisix"
-	"app/std/apisix/plugins/authentication"
 	"app/std/net/http/logic"
 	"app/std/oauth"
 	"context"
@@ -48,11 +46,17 @@ func (l *AdminLoginLogic) AdminLogin(req *types.LoginReq) (resp logic.Response) 
 	})
 	if err != nil {
 		resp.Error("管理员服务系统错误！", err.Error())
+		return
+	}
+
+	if !user.Success {
+		resp.Error(user.Message, nil)
+		return
 	}
 
 	// 密码比对
-	password := user.Salt + req.Password
-	hashedErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	password := user.Data.Salt + req.Password
+	hashedErr := bcrypt.CompareHashAndPassword([]byte(user.Data.Password), []byte(password))
 	if hashedErr != nil {
 		resp.Error("用户名或密码错误！", nil)
 		return
@@ -61,7 +65,7 @@ func (l *AdminLoginLogic) AdminLogin(req *types.LoginReq) (resp logic.Response) 
 	// 删除原来的派发token
 	conn := sqlx.NewMysql(conf.Mysql.Dsn())
 
-	likeStr := fmt.Sprintf("'%%\"ClientID\":\"%s\",\"UserID\":\"%d\"%%'", conf.Oauth.ClientID, user.UserId)
+	likeStr := fmt.Sprintf("'%%\"ClientID\":\"%s\",\"UserID\":\"%d\"%%'", conf.Oauth.ClientID, user.Data.UserId)
 	sqlStr := "DELETE from oauth2_token WHERE `data` LIKE " + likeStr
 	conn.ExecCtx(l.ctx, sqlStr)
 
@@ -85,7 +89,7 @@ func (l *AdminLoginLogic) AdminLogin(req *types.LoginReq) (resp logic.Response) 
 		ClientID:       oauthConfig.ClientID,
 		State:          "jwt",
 		Scope:          "all",
-		UserID:         strconv.FormatInt(user.UserId, 10),
+		UserID:         strconv.FormatInt(user.Data.UserId, 10),
 		AccessTokenExp: time.Duration(exp) * time.Hour,
 		Request:        l.header,
 	}
@@ -104,16 +108,6 @@ func (l *AdminLoginLogic) AdminLogin(req *types.LoginReq) (resp logic.Response) 
 		resp.Error("系统出错了", tokenErr.Error())
 		return
 	}
-
-	// 生成消费者供apisix public-ley消费
-	key := strconv.FormatInt(user.UserId, 10)
-	var expInt = int64(exp) * 3600
-
-	apisix.NewConsumer(conf.Apisix.ApiKey, conf.Apisix.Host).Add(key, apisix.WithJwtAuth(authentication.JwtAuth{
-		Key:    key,
-		Secret: conf.Auth.AccessSecret,
-		Exp:    expInt,
-	}))
 
 	resp.Success("获取成功！", token)
 	return

@@ -54,11 +54,13 @@ func (l *AdminShowLogic) AdminShow(in *pb.AdminShowReq) (*pb.LoginResp, error) {
 	}
 
 	return &pb.LoginResp{
-		Success:  true,
-		Message:  "获取成功！",
-		Salt:     first.Salt,
-		UserId:   first.Id,
-		Username: first.Username,
-		Password: first.Password,
+		Success: true,
+		Message: "获取成功！",
+		Data: &pb.LoginData{
+			Salt:     first.Salt,
+			UserId:   first.Id,
+			Username: first.Username,
+			Password: first.Password,
+		},
 	}, nil
 }

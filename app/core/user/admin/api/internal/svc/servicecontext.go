@@ -2,13 +2,16 @@ package svc
 
 import (
 	"app/core/user/admin/api/internal/config"
+	userAdmin "app/core/user/admin/rpc/service"
 	"app/std/apisix"
 	"app/std/apisix/plugins"
 	"app/std/util"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config config.Config
+	Config       config.Config
+	UserAdminRpc userAdmin.Service
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -34,6 +37,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 
 	return &ServiceContext{
-		Config: c,
+		Config:       c,
+		UserAdminRpc: userAdmin.NewService(zrpc.MustNewClient(c.UserAdminRpc)),
 	}
 }

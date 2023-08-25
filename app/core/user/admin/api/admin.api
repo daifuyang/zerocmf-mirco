@@ -1,5 +1,4 @@
 @server(
-	jwt: Auth // 开启 jwt 认证
 	group: oauth
 	prefix: /api/v1/user/admin
 )
