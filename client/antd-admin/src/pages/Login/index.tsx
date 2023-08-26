@@ -19,6 +19,7 @@ import { Space, Tabs, message } from 'antd';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { history } from '@umijs/max';
+import { useModel } from '@umijs/max';
 
 type LoginType = 'phone' | 'account';
 
@@ -32,6 +33,9 @@ const iconStyles: CSSProperties = {
 
 export default () => {
   const [loginType, setLoginType] = useState<LoginType>('account');
+
+  const { initialState } =  useModel('@@initialState');
+
   return (
     <ProConfigProvider hashed={false}>
       <div
@@ -61,6 +65,7 @@ export default () => {
             if(res.code === 1) {
                 const token = JSON.stringify(res.data)
                 localStorage.setItem("token",token)
+                initialState?.fetchUserInfo?.()
                 history.push("/")
             }
           } }

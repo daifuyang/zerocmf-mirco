@@ -84,7 +84,7 @@ export default (props: any) => {
   "fixedHeader": false,
   "fixSiderbar": true,
   "colorWeak": false,
-  "title": "zerocmf",
+  "title": "ZeroCMF管理系统",
   "pwa": true,
   "logo": "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
   "iconfontUrl": "",
@@ -105,6 +105,10 @@ export default (props: any) => {
       "colorTextMenu": "#595959",
       "colorTextMenuSelected": "rgba(42,122,251,1)",
       "colorBgMenuItemSelected": "rgba(230,243,254,1)"
+    },
+    "pageContainer": {
+      "paddingBlockPageContainerContent": 0,
+      "paddingInlinePageContainerContent": 24
     }
   }
 };

@@ -1,9 +1,14 @@
 import Footer from '@/components/Footer';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
+import { ProBreadcrumb, SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { RequestConfig, createGlobalStyle, history } from '@umijs/max';
-import { message, notification } from 'antd';
+import {
+  RequestConfig,
+  createGlobalStyle,
+  history,
+  useRouteProps,
+} from '@umijs/max';
+import { ConfigProvider, Tabs, Tooltip, message, notification } from 'antd';
 import defaultSettings from '../config/defaultSettings';
 import {
   AvatarDropdown,
@@ -11,6 +16,10 @@ import {
 } from './components/RightContent/AvatarDropdown';
 
 import { currentUser as queryCurrentUser } from '@/services/user';
+import { AppstoreOutlined } from '@ant-design/icons';
+
+import styles from './style.less';
+import { useEffect } from 'react';
 
 const codeMessage: any = {
   200: '服务器成功返回请求的数据。',
@@ -45,6 +54,7 @@ export const styledComponents = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: any;
+  routes: any[];
   fetchUserInfo?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
@@ -65,16 +75,17 @@ export async function getInitialState(): Promise<{
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
-    console.log('currentUser', currentUser)
     return {
       fetchUserInfo,
       currentUser,
+      routes: [],
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
 
   return {
     fetchUserInfo,
+    routes: [],
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
@@ -99,18 +110,79 @@ export const layout: RunTimeLayoutConfig = ({
     style: {
       height: '100vh',
     },
+    headerContentRender: () => {
+      return (
+        <div style={{ display: 'flex' }}>
+          <div
+            onClick={() => {
+              history.push('/admin/menu/list');
+            }}
+            style={{
+              cursor: 'pointer',
+              fontSize: '20px',
+              color: '#fff',
+            }}
+          >
+            <Tooltip title="菜单管理">
+              <AppstoreOutlined />
+            </Tooltip>
+          </div>
+          <div className={styles.breadcrumb}>
+            <ProBreadcrumb />
+          </div>
+        </div>
+      );
+    },
     footerRender: () => <Footer />,
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      // 获取当前路由信息
+      const routePros = useRouteProps();
+      const routesArr: any[] = initialState?.routes || [];
+      
+      useEffect( () => {
+        if (!routesArr?.some((item: any) => item?.path === routePros?.path) && routePros?.name) {
+          const routes = [...routesArr, {...routePros,children}];
+          setInitialState((preInitialState: any) => ({
+            ...preInitialState,
+            routes,
+          }));
+        }
+
+      } ,[routePros])
+
+      const defaultPanes = routesArr.map((item) => {
+        return {
+          label: item.name,
+          key: item.path,
+          children:item.children
+        };
+      });
+
       return (
         <>
-          {children}
+          <ConfigProvider
+            theme={{
+              components: {
+                Tabs: {
+                  horizontalMargin: '8px 0px',
+                },
+              },
+            }}
+          >
+            <Tabs
+              size="small"
+              hideAdd
+              key={routePros.path}
+              type="editable-card"
+              items={defaultPanes}
+            />
+          </ConfigProvider>
           <SettingDrawer
             disableUrlParams
             enableDarkTheme
             settings={initialState?.settings}
             onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
+              setInitialState((preInitialState: any) => ({
                 ...preInitialState,
                 settings,
               }));
