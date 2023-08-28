@@ -1,4 +1,4 @@
-import { request,authRequest } from '@/utils/request';
+import { authRequest, request } from '@/utils/request';
 
 export async function login(params: any) {
   return request('/api/authn/admin/login', {
@@ -8,7 +8,7 @@ export async function login(params: any) {
 }
 
 export async function currentUser() {
-    return authRequest('/api/v1/user/admin/user_info', {
-      method: 'GET',
-    });
-  }
+  return authRequest('/api/v1/user/admin/user_info', {
+    method: 'GET',
+  });
+}

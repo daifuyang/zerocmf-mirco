@@ -13,11 +13,20 @@ import (
 )
 
 type (
-	Request  = pb.Request
-	Response = pb.Response
+	DeleteReq    = pb.DeleteReq
+	Response     = pb.Response
+	SaveReq      = pb.SaveReq
+	TreeList     = pb.TreeList
+	TreeListReq  = pb.TreeListReq
+	TreeListResp = pb.TreeListResp
 
 	Service interface {
-		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+		// 获取菜单
+		TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error)
+		// 保存菜单
+		Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
+		// 删除菜单
+		Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
 	}
 
 	defaultService struct {
@@ -31,7 +40,20 @@ func NewService(cli zrpc.Client) Service {
 	}
 }
 
-func (m *defaultService) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+// 获取菜单
+func (m *defaultService) TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error) {
 	client := pb.NewServiceClient(m.cli.Conn())
-	return client.Ping(ctx, in, opts...)
+	return client.TreeList(ctx, in, opts...)
+}
+
+// 保存菜单
+func (m *defaultService) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
+	client := pb.NewServiceClient(m.cli.Conn())
+	return client.Save(ctx, in, opts...)
+}
+
+// 删除菜单
+func (m *defaultService) Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
+	client := pb.NewServiceClient(m.cli.Conn())
+	return client.Delete(ctx, in, opts...)
 }

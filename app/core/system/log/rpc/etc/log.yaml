@@ -1,5 +1,5 @@
 Name: main.rpc
-ListenOn: 0.0.0.0:1108
+ListenOn: 0.0.0.0:10200
 Mode: dev
 
 Log:
@@ -27,4 +27,4 @@ Cache:
 Etcd:
   Hosts:
     - localhost:2379
-  Key: app.core.log.rpc
+  Key: app.system.log.rpc

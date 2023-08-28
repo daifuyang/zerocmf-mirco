@@ -1,0 +1,117 @@
+[
+  {
+    "menuType": 0,
+    "name": "首页",
+    "path": "/home",
+    "component": "/pages/Home"
+  },
+  {
+    "menuType": 0,
+    "name": "系统管理",
+    "path": "/admin",
+    "component": "",
+    "icon": "",
+    "order": 10000,
+    "access": "system:admin",
+    "link": 0,
+    "hideInMenu": 0,
+    "routes": [
+      {
+        "menuType": 0,
+        "name": "管理员",
+        "path": "/admin/user",
+        "component": "",
+        "icon": "",
+        "order": 10000,
+        "access": "system:admin:user",
+        "link": 0,
+        "hideInMenu": 0,
+        "routes": [
+          {
+            "menuType": 1,
+            "name": "管理员列表",
+            "path": "/admin/user/list",
+            "component": "/pages/Admin",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:user:list",
+            "link": 0,
+            "hideInMenu": 1
+          },
+          {
+            "menuType": 3,
+            "name": "添加管理员",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:user:add",
+            "hideInMenu": 1
+          },
+          {
+            "menuType": 3,
+            "name": "修改管理员",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:user:edit",
+            "hideInMenu": 1
+          },
+          {
+            "menuType": 3,
+            "name": "删除管理员",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:user:delete",
+            "hideInMenu": 1
+          }
+        ]
+      },
+      {
+        "name": "菜单管理",
+        "menuType": 0,
+        "path": "/admin/menu",
+        "component": "",
+        "icon": "",
+        "order": 10000,
+        "access": "system:admin:menu",
+        "link": 0,
+        "hideInMenu": 1,
+        "routes": [
+          {
+            "name": "菜单列表",
+            "menuType": 1,
+            "path": "/admin/menu/list",
+            "component": "/pages/Menu",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:menu:list",
+            "link": 0,
+            "hideInMenu": 0
+          },
+          {
+            "menuType": 3,
+            "name": "添加菜单",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:menu:add",
+            "hideInMenu": 1
+          },
+          {
+            "menuType": 3,
+            "name": "修改菜单",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:menu:edit",
+            "hideInMenu": 1
+          },
+          {
+            "menuType": 3,
+            "name": "删除菜单",
+            "icon": "",
+            "order": 10000,
+            "access": "system:admin:menu:delete",
+            "hideInMenu": 1
+          }
+        ]
+      }
+    ]
+  }
+]

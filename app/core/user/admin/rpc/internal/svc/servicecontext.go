@@ -25,7 +25,9 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	dsn := c.Mysql.Dsn()
 	adminModel := model.NewAdminUserModel(sqlx.NewMysql(dsn), c.Cache)
-	util.Install(c.Mysql, func() {
+	util.Install(func() {
+
+		util.InitDb(c.Mysql)
 
 		adminPassword := c.AdminPassword
 		if strings.TrimSpace(adminPassword) == "" {

@@ -1,6 +1,30 @@
 Name: menu.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:10210
+Mode: dev
+
+Log:
+  Mode: file
+  Path: data/logs
+  KeepDays: 7
+  MaxSize: 2
+
+# mysql: 参数必带
+Mysql:
+  Username: root
+  Password: '123456'
+  Host: localhost
+  port: 3306
+  DbName: zerocmf_system
+  charset: utf8mb4
+  Collate: utf8mb4_unicode_ci
+  ParseTime: true
+  AuthCode: zerocmf
+
+# cache:
+Cache:
+  - Host: localhost:6379
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
-  Key: menu.rpc
+  Key: app.system.menu.rpc

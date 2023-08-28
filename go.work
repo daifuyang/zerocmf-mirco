@@ -1,8 +1,9 @@
 go 1.20
 
 use (
-	./app/core/log
-	./app/core/log/rpc
+	./app/biz/admin
+	./app/core/system/log
+	./app/core/system/log/rpc
 	./app/core/system/menu
 	./app/core/system/menu/rpc
 	./app/core/user/admin

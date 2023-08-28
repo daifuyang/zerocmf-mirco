@@ -15,7 +15,9 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 
-	util.Install(c.Mysql, func() {
+	util.Install(func() {
+
+		util.InitDb(c.Mysql)
 
 		//	注册网关
 		routes := []apisix.Route{

@@ -33,5 +33,5 @@ Etcd:
 LogRpc:
   Timeout: 30000
   Etcd:
-    Key: app.core.log.rpc
+    Key: app.system.log.rpc
 

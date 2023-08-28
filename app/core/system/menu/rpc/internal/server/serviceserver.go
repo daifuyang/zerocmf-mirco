@@ -22,7 +22,20 @@ func NewServiceServer(svcCtx *svc.ServiceContext) *ServiceServer {
 	}
 }
 
-func (s *ServiceServer) Ping(ctx context.Context, in *pb.Request) (*pb.Response, error) {
-	l := logic.NewPingLogic(ctx, s.svcCtx)
-	return l.Ping(in)
+// 获取菜单
+func (s *ServiceServer) TreeList(ctx context.Context, in *pb.TreeListReq) (*pb.TreeListResp, error) {
+	l := logic.NewTreeListLogic(ctx, s.svcCtx)
+	return l.TreeList(in)
+}
+
+// 保存菜单
+func (s *ServiceServer) Save(ctx context.Context, in *pb.SaveReq) (*pb.Response, error) {
+	l := logic.NewSaveLogic(ctx, s.svcCtx)
+	return l.Save(in)
+}
+
+// 删除菜单
+func (s *ServiceServer) Delete(ctx context.Context, in *pb.SaveReq) (*pb.Response, error) {
+	l := logic.NewDeleteLogic(ctx, s.svcCtx)
+	return l.Delete(in)
 }

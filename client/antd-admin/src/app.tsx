@@ -1,25 +1,25 @@
-import Footer from '@/components/Footer';
+import NotFound from '@/pages/404';
+import * as icons from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { ProBreadcrumb, SettingDrawer } from '@ant-design/pro-components';
+import { ProBreadcrumb } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import {
-  RequestConfig,
-  createGlobalStyle,
-  history,
-  useRouteProps,
-} from '@umijs/max';
-import { ConfigProvider, Tabs, Tooltip, message, notification } from 'antd';
+import { RequestConfig, createGlobalStyle, history } from '@umijs/max';
+import { Spin, Tooltip, message, notification } from 'antd';
 import defaultSettings from '../config/defaultSettings';
 import {
   AvatarDropdown,
   AvatarName,
 } from './components/RightContent/AvatarDropdown';
 
+import Footer from '@/components/Footer';
+
 import { currentUser as queryCurrentUser } from '@/services/user';
 import { AppstoreOutlined } from '@ant-design/icons';
 
+import { Navigate } from '@umijs/max';
+import React from 'react';
+import { getMenusTree } from './services/menu';
 import styles from './style.less';
-import { useEffect } from 'react';
 
 const codeMessage: any = {
   200: '服务器成功返回请求的数据。',
@@ -49,44 +49,138 @@ export const styledComponents = {
   `,
 };
 
+function processRoutes(routes = []) {
+  routes.forEach((route: any) => {
+    let Component: React.ComponentType<any> | null = route.element || null;
+    let Icon: React.ComponentType<any> | null = route.element || null;
+    if (route.component) {
+      let { component } = route;
+      if (component.startsWith('/pages')) {
+        component = component.replace('/pages', '');
+      }
+      const pattern = /\.+.*$/;
+      if (!pattern.test(component)) {
+        component = component.replace(/\/+$/, '') + '/index.tsx';
+      }
+      Component = React.lazy(() => import(`./pages${component}`));
+      route.element = (
+        <React.Suspense
+          fallback={
+            <Spin spinning={true}>
+              <div style={{ width: '100%', height: '100vh' }}></div>
+            </Spin>
+          }
+        >
+          {Component && <Component />}
+        </React.Suspense>
+      );
+    }
+
+    if (route.icon) {
+      Icon = (icons as any)[route.icon];
+      if (Icon) {
+        route.icon = <Icon />;
+      }
+    }
+
+    if (route.routes?.length > 0) {
+      route.routes.unshift({
+        path: route.path,
+        element: <Navigate to={route.routes[0].path} replace />,
+      });
+      route.children = route.routes;
+      processRoutes(route.routes);
+    }
+  });
+}
+
+let extraRoutes: any;
+export function patchClientRoutes({ routes }: any) {
+  // 根据 extraRoutes 对 routes 做一些修改
+  const routerIndex = routes.findIndex((item: any) => item.path === '/');
+  const childRoutes = routes[routerIndex].children;
+  const childIndex =
+    childRoutes.findIndex((item: any) => item.path === '/') || 0;
+  if (!childRoutes[childIndex].children) {
+    childRoutes[childIndex].children = [];
+  }
+
+  processRoutes(extraRoutes);
+  if (extraRoutes) {
+    extraRoutes.push({
+      path: '/*',
+      element: <NotFound />,
+    });
+
+    childRoutes[childIndex].children.push(...extraRoutes);
+  }
+}
+
+export function render(oldRender: any) {
+  getInitialState().then((res) => {
+    extraRoutes = res.menus;
+    oldRender();
+  });
+}
+
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: any;
-  routes: any[];
+  tabRoutes: any[];
+  menus: any[];
   fetchUserInfo?: () => Promise<any | undefined>;
+  fetchMenusTree?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    try {
-      const res = await queryCurrentUser();
-      if (res.code != 1) {
-        message.error('用户身份已失效!');
-        history.push(loginPath);
-        return;
-      }
-      return res.data;
-    } catch (error) {
+    const res = await queryCurrentUser();
+    if (res.code != 1) {
+      message.error('用户身份已失效!');
       history.push(loginPath);
+      return undefined;
     }
-    return undefined;
+    return res.data;
   };
+
+  const fetchMenusTree = async () => {
+    const res = await getMenusTree();
+    if (res.code != 1) {
+      message.error('用户身份已失效!');
+      history.push(loginPath);
+      return undefined;
+    }
+    return res.data;
+  };
+
+  const tabRoutes = [
+    {
+      name: '首页',
+      path: '/home',
+      closable: false,
+    },
+  ];
 
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    const menus = await fetchMenusTree();
     return {
       fetchUserInfo,
+      fetchMenusTree,
       currentUser,
-      routes: [],
+      tabRoutes,
       settings: defaultSettings as Partial<LayoutSettings>,
+      menus,
     };
   }
 
   return {
     fetchUserInfo,
-    routes: [],
+    fetchMenusTree,
+    tabRoutes,
     settings: defaultSettings as Partial<LayoutSettings>,
+    menus: [],
   };
 }
 
@@ -96,9 +190,24 @@ export const layout: RunTimeLayoutConfig = ({
 }) => {
   return {
     logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
-    menu: {
+    /* menu: {
       locale: false,
-    },
+      params: {
+        userId: initialState?.currentUser?.userId,
+      },
+      request: async (params, defaultMenuData) => {
+        // initialState.currentUser 中包含了所有用户信息
+        const res = await getMenusTree()
+        if(res.code != 1) {
+          message.error(res.msg)
+          return [];
+        }
+
+        const list = treeToList(res.data,'routes')
+        setInitialState((prevState: any) => ({ ...prevState, menus: list }));
+        return res.data;
+      },
+    }, */
     avatarProps: {
       src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
       size: 'small',
@@ -135,49 +244,10 @@ export const layout: RunTimeLayoutConfig = ({
     },
     footerRender: () => <Footer />,
     childrenRender: (children) => {
-      // 获取当前路由信息
-      const routePros = useRouteProps();
-      const routesArr: any[] = initialState?.routes || [];
-      
-      useEffect( () => {
-        if (!routesArr?.some((item: any) => item?.path === routePros?.path) && routePros?.name) {
-          const routes = [...routesArr, {...routePros,children}];
-          setInitialState((preInitialState: any) => ({
-            ...preInitialState,
-            routes,
-          }));
-        }
-
-      } ,[routePros])
-
-      const defaultPanes = routesArr.map((item) => {
-        return {
-          label: item.name,
-          key: item.path,
-          children:item.children
-        };
-      });
-
       return (
         <>
-          <ConfigProvider
-            theme={{
-              components: {
-                Tabs: {
-                  horizontalMargin: '8px 0px',
-                },
-              },
-            }}
-          >
-            <Tabs
-              size="small"
-              hideAdd
-              key={routePros.path}
-              type="editable-card"
-              items={defaultPanes}
-            />
-          </ConfigProvider>
-          <SettingDrawer
+          {children}
+          {/* <SettingDrawer
             disableUrlParams
             enableDarkTheme
             settings={initialState?.settings}
@@ -187,7 +257,7 @@ export const layout: RunTimeLayoutConfig = ({
                 settings,
               }));
             }}
-          />
+          /> */}
         </>
       );
     },

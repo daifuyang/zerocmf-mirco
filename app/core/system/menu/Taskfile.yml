@@ -61,7 +61,7 @@ tasks:
     cmds:
       # - cd hello_rpc/; goctl rpc protoc rpc.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=.
       #      - cd rpc/; goctl rpc protoc main.proto --go_out=. --go-grpc_out=. --zrpc_out=. --style gozero
-      - goctl rpc protoc "./rpc/pb/menu.proto" --go_out=./rpc --go-grpc_out=./rpc --zrpc_out=./rpc --style gozero --home ../../template
+      - goctl rpc protoc "./rpc/pb/menu.proto" --go_out=./rpc --go-grpc_out=./rpc --zrpc_out=./rpc --style gozero --home ../../../../template
     ignore_error: true
 
   # ref: https://go-zero.dev/cn/docs/design/grammar
@@ -69,13 +69,13 @@ tasks:
   gen:api:
     cmds:
       #      - cd api; goctl api go --api api.api --dir . --style gozero
-      - goctl api go --api "./api/menu.api" --dir="./api" --style gozero --home ../../../template
+      - goctl api go --api "./api/menu.api" --dir="./api" --style gozero --home ../../../../template
 
   # 基于 sql， 生成 model CRUD 代码
   gen:model:
     cmds:
       #      - goctl model mysql ddl -src="./*.sql" -dir="./sql/model" -c --style gozero
-      - goctl model mysql ddl -src="./rpc/data/sql/*.sql" -dir="./model" -c --style gozero --home ../../../template
+      - goctl model mysql ddl -src="./rpc/data/sql/*.sql" -dir="./model" -c --style gozero --home ../../../../template
 
   # 生成 docker 构建文件
   gen:docker:

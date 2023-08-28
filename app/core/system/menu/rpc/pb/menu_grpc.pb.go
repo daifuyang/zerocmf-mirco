@@ -19,14 +19,21 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Service_Ping_FullMethodName = "/core.system.menu.rpc.v1.Service/Ping"
+	Service_TreeList_FullMethodName = "/core.system.menu.rpc.v1.Service/TreeList"
+	Service_Save_FullMethodName     = "/core.system.menu.rpc.v1.Service/Save"
+	Service_Delete_FullMethodName   = "/core.system.menu.rpc.v1.Service/Delete"
 )
 
 // ServiceClient is the client API for Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
-	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	// 获取菜单
+	TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error)
+	// 保存菜单
+	Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
+	// 删除菜单
+	Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type serviceClient struct {
@@ -37,9 +44,27 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
-func (c *serviceClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *serviceClient) TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error) {
+	out := new(TreeListResp)
+	err := c.cc.Invoke(ctx, Service_TreeList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Service_Ping_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Service_Save_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, Service_Delete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +75,12 @@ func (c *serviceClient) Ping(ctx context.Context, in *Request, opts ...grpc.Call
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
-	Ping(context.Context, *Request) (*Response, error)
+	// 获取菜单
+	TreeList(context.Context, *TreeListReq) (*TreeListResp, error)
+	// 保存菜单
+	Save(context.Context, *SaveReq) (*Response, error)
+	// 删除菜单
+	Delete(context.Context, *SaveReq) (*Response, error)
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -58,8 +88,14 @@ type ServiceServer interface {
 type UnimplementedServiceServer struct {
 }
 
-func (UnimplementedServiceServer) Ping(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (UnimplementedServiceServer) TreeList(context.Context, *TreeListReq) (*TreeListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TreeList not implemented")
+}
+func (UnimplementedServiceServer) Save(context.Context, *SaveReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
+}
+func (UnimplementedServiceServer) Delete(context.Context, *SaveReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
@@ -74,20 +110,56 @@ func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
 }
 
-func _Service_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _Service_TreeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TreeListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).Ping(ctx, in)
+		return srv.(ServiceServer).TreeList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Service_Ping_FullMethodName,
+		FullMethod: Service_TreeList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).Ping(ctx, req.(*Request))
+		return srv.(ServiceServer).TreeList(ctx, req.(*TreeListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_Save_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).Save(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_Save_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).Save(ctx, req.(*SaveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).Delete(ctx, req.(*SaveReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +172,16 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Ping",
-			Handler:    _Service_Ping_Handler,
+			MethodName: "TreeList",
+			Handler:    _Service_TreeList_Handler,
+		},
+		{
+			MethodName: "Save",
+			Handler:    _Service_Save_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _Service_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

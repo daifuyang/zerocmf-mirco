@@ -58,23 +58,6 @@
 | 💖 [app/biz/portal](app/biz/portal) | 通用门户管理系统   |
 | 💖 [app/biz/mall](app/biz/mall)     | 通用电商门新零售系统 |
 
-### 核心服务:
-
-| [核心服务(app/core)](app/core)                 | 服务           |
-|:-------------------------------------------|--------------|
-| [app/core/user/authn](app/core/user/authn) | 用户服务: 注册/登录  |
-| [app/core/user/authz](app/core/user/authz) | 用户服务: 访问权限控制 |
-| [app/core/queue](app/core/queue)           | 基础队列服务       |
-| [app/core/log](app/core/log)               | 日志记录         |
-
-### 服务矩阵:
-
-| [业务单元(app/unit)](app/unit)                              | 说明                 |
-|:--------------------------------------------------------|--------------------|
-| ☀️ [app/unit/license/key](app/unit/license/key)         | 注册码服务: 售卖 app `密钥` |
-| ☀️ [app/unit/cart](app/unit/cart)                       | 购物车系统              |
-| ☀️ [app/unit/order](app/unit/order)                     | 订单系统               |
-| ☀️ [app/unit/finance/payment](app/unit/finance/payment) | 支付系统               |
 
 ### 鸣谢：
 

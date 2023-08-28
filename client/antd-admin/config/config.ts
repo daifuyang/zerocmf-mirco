@@ -18,6 +18,7 @@ export default defineConfig({
   request: {},
   styledComponents: {},
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  mfsu: false,
   npmClient: 'pnpm',
 });
 

@@ -1,0 +1,23 @@
+syntax = "v1"
+
+info (
+	title: "后台相关"
+	desc: "后台相关"
+	author: "daifuyang"
+	email: "1140444693@qq.com"
+)
+
+type (
+	MenusTreeReq {
+	}
+)
+
+@server(
+	group: admin/menu
+	prefix: /api/v1/admin/menu
+)
+
+service admin-api {
+	@handler GetTrees // 获取后台菜单
+	get /trees (MenusTreeReq)
+}

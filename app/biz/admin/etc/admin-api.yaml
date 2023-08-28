@@ -1,0 +1,34 @@
+Name: admin-api
+Host: 0.0.0.0
+Port: 10000
+
+Etcd:
+  Key: rpcServer
+  Hosts:
+    - localhost:2379
+
+SystemMenuRpc:
+  Timeout: 30000
+  Etcd:
+    Key: app.system.menu.rpc
+
+Apisix:
+  apiKey: edd1c9f034335f136f87ad84b625c8f1
+  Host: localhost
+  Name: biz-admin
+  upstream:
+    nodes:
+      - host: 192.168.8.169
+        port: 10000
+        weight: 1
+    timeout:
+      connect: 30
+      send: 30
+      read: 30
+    type: roundrobin
+    scheme: http
+    pass_host: pass
+    keepalive_pool:
+      idle_timeout: 60
+      requests: 1000
+      size: 320
