@@ -12,7 +12,7 @@ import (
 
 // 首次执行初始化程序
 
-func Install(callbacks func()) {
+func Install(callbacks func(), debug ...bool) {
 
 	folderPath := "data"
 	_, folderErr := os.Stat(folderPath)
@@ -33,20 +33,20 @@ func Install(callbacks func()) {
 
 		callbacks()
 
-		// 文件不存在，创建文件
-		file, createErr := os.Create(filePath)
-		if createErr != nil {
-			fmt.Println("无法创建文件:", createErr)
-			return
-		}
-		defer func(file *os.File) {
+		if debug == nil {
+			// 文件不存在，创建文件
+			file, createErr := os.Create(filePath)
+			if createErr != nil {
+				fmt.Println("无法创建文件:", createErr)
+				return
+			}
 			err := file.Close()
 			if err != nil {
 				fmt.Println("file close err:", err.Error())
+				return
 			}
-		}(file)
+		}
 		fmt.Println("初始化成功！")
-
 	} else if fileNotExistErr == nil {
 		fmt.Println("服务已安装！")
 	} else {

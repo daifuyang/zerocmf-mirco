@@ -1,6 +1,6 @@
 syntax = "v1"
 
-info (
+info(
 	title: "后台相关"
 	desc: "后台相关"
 	author: "daifuyang"
@@ -9,6 +9,31 @@ info (
 
 type (
 	MenusTreeReq {
+	}
+
+	MenuShowReq {
+		Id int64 `path:"id"`
+	}
+
+	MenuApiReq {
+		Name   string `json:"name"`
+		API    string `json:"api"`
+		Method string `json:"method"`
+		Desc   string `json:"desc,optional"`
+	}
+
+	MenuSaveReq {
+		Id         int64        `path:"id,optional"`
+		ParentID   int          `json:"parentId"`
+		MenuType   int          `json:"menuType"`
+		Name       string       `json:"name"`
+		Order      int          `json:"order"`
+		Path       string       `json:"path,optional"`
+		HideInMenu int          `json:"hideInMenu,optional"`
+		Status     int          `json:"status,optional"`
+		APIList    []MenuApiReq `json:"apiList"`
+		Component  string       `json:"component,optional"`
+		Access     string       `json:"access"`
 	}
 )
 
@@ -20,4 +45,13 @@ type (
 service admin-api {
 	@handler GetTrees // 获取后台菜单
 	get /trees (MenusTreeReq)
+
+	@handler Show // 获取单个菜单
+	get /:id (MenuShowReq)
+
+	@handler Add // 单价单个菜单
+	post / (MenuSaveReq)
+
+	@handler Edit // 单价单个菜单
+	post /:id (MenuSaveReq)
 }

@@ -103,6 +103,10 @@ export default (props: any) => {
       "colorMenuBackground": "#fff",
       "colorMenuItemDivider": "#dfdfdf",
       "colorTextMenu": "#595959",
+      "colorTextMenuItemHover": "rgba(42,122,251,1)",
+      "colorBgMenuItemHover": "transparent",
+      "colorTextMenuActive": "rgba(42,122,251,1)",
+      "colorBgMenuItemActive": "rgba(230,243,254,1)",
       "colorTextMenuSelected": "rgba(42,122,251,1)",
       "colorBgMenuItemSelected": "rgba(230,243,254,1)"
     },

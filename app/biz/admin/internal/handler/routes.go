@@ -18,6 +18,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/trees",
 				Handler: adminmenu.GetTreesHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:id",
+				Handler: adminmenu.ShowHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/",
+				Handler: adminmenu.AddHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/:id",
+				Handler: adminmenu.EditHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/v1/admin/menu"),
 	)

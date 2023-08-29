@@ -3,103 +3,115 @@ import * as icons from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button, Popconfirm } from 'antd';
+import { Button, Divider, Popconfirm, Space } from 'antd';
 import { useRef } from 'react';
 import Save from './save';
-
-const columns: ProColumns<any>[] = [
-  {
-    title: '菜单名称',
-    dataIndex: 'name',
-  },
-  {
-    title: '图标',
-    dataIndex: 'icon',
-    hideInSearch: true,
-    render: (_, record) => {
-      if (record.icon) {
-        const Icon = (icons as any)[record.icon];
-        return <Icon />;
-      }
-      return;
-    },
-  },
-  {
-    title: '排序',
-    dataIndex: 'order',
-    hideInSearch: true,
-  },
-  {
-    title: '权限标识',
-    dataIndex: 'access',
-    hideInSearch: true,
-  },
-  {
-    title: '组件路径',
-    dataIndex: 'component',
-    hideInSearch: true,
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    valueType: 'select',
-    request: () =>
-      Promise.resolve([
-        {
-          label: '启用',
-          value: 1,
-        },
-        {
-          label: '停用',
-          value: 0,
-        },
-      ]),
-  },
-  {
-    title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'createdAt',
-    valueType: 'dateTime',
-    renderText: (_, record) => {
-      return record.createTime;
-    },
-    sorter: true,
-    hideInSearch: true,
-  },
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option',
-    render: (text, record, _, action) => [
-      <a key="editable" onClick={() => {}}>
-        编辑
-      </a>,
-      <Popconfirm
-        key="delete"
-        title="您确定删除吗？"
-        //  onConfirm={confirm}
-        //  onCancel={cancel}
-        okText="确定"
-        cancelText="取消"
-      >
-        <a
-          style={{
-            color: '#ff4d4f',
-          }}
-        >
-          删除
-        </a>
-      </Popconfirm>,
-    ],
-  },
-];
 
 export default () => {
   const actionRef = useRef<ActionType>();
   const modalRef = useRef<any>();
+
+  const columns: ProColumns<any>[] = [
+    {
+      title: '菜单名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '图标',
+      dataIndex: 'icon',
+      hideInSearch: true,
+      render: (_, record) => {
+        if (record.icon) {
+          const Icon = (icons as any)[record.icon];
+          return <Icon />;
+        }
+        return;
+      },
+    },
+    {
+      title: '排序',
+      dataIndex: 'order',
+      hideInSearch: true,
+    },
+    {
+      title: '权限标识',
+      dataIndex: 'access',
+      hideInSearch: true,
+    },
+    {
+      title: '组件路径',
+      dataIndex: 'component',
+      hideInSearch: true,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      valueType: 'select',
+      sorter: true,
+      request: () =>
+        Promise.resolve([
+          {
+            label: '启用',
+            value: 1,
+          },
+          {
+            label: '停用',
+            value: 0,
+          },
+        ]),
+    },
+    {
+      title: '创建时间',
+      key: 'showTime',
+      dataIndex: 'createdAt',
+      valueType: 'dateTime',
+      renderText: (_, record) => {
+        return record.createTime;
+      },
+      sorter: true,
+      hideInSearch: true,
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option',
+      width: 200,
+      render: (text, record, _, action) => (
+        <Space>
+          <a onClick={() => {
+            modalRef.current.open({
+              title: '编辑菜单',
+              ...record
+            })
+          }}>编辑</a>
+          <a onClick={() => {}}>新增子项菜单</a>
+          <Popconfirm
+            title="您确定删除吗？"
+            //  onConfirm={confirm}
+            //  onCancel={cancel}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a
+              style={{
+                color: '#ff4d4f',
+              }}
+            >
+              删除
+            </a>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
+  const onFinish = () => {
+    actionRef.current?.reload();
+  }
+
   return (
     <>
-      <Save ref={modalRef} />
+      <Save ref={modalRef} onFinish={onFinish} />
       <ProTable<any>
         columns={columns}
         actionRef={actionRef}

@@ -28,8 +28,14 @@ func (s *ServiceServer) TreeList(ctx context.Context, in *pb.TreeListReq) (*pb.T
 	return l.TreeList(in)
 }
 
+// 获取单个菜单
+func (s *ServiceServer) Show(ctx context.Context, in *pb.ShowReq) (*pb.ShowResp, error) {
+	l := logic.NewShowLogic(ctx, s.svcCtx)
+	return l.Show(in)
+}
+
 // 保存菜单
-func (s *ServiceServer) Save(ctx context.Context, in *pb.SaveReq) (*pb.Response, error) {
+func (s *ServiceServer) Save(ctx context.Context, in *pb.SaveReq) (*pb.SaveResp, error) {
 	l := logic.NewSaveLogic(ctx, s.svcCtx)
 	return l.Save(in)
 }

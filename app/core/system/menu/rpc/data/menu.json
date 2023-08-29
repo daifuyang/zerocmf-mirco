@@ -36,7 +36,14 @@
             "order": 10000,
             "access": "system:admin:user:list",
             "link": 0,
-            "hideInMenu": 1
+            "hideInMenu": 1,
+            "api": [
+              {
+                "name": "管理员列表",
+                "api": "/api/v1/admin/menu/trees",
+                "method": "get"
+              }
+            ]
           },
           {
             "menuType": 3,
@@ -44,7 +51,14 @@
             "icon": "",
             "order": 10000,
             "access": "system:admin:user:add",
-            "hideInMenu": 1
+            "hideInMenu": 1,
+            "api": [
+              {
+                "name": "添加管理员",
+                "api": "/api/v1/admin/menu",
+                "method": "post"
+              }
+            ]
           },
           {
             "menuType": 3,
@@ -52,7 +66,14 @@
             "icon": "",
             "order": 10000,
             "access": "system:admin:user:edit",
-            "hideInMenu": 1
+            "hideInMenu": 1,
+            "api": [
+              {
+                "name": "修改管理员",
+                "api": "/api/v1/admin/menu/:id",
+                "method": "post"
+              }
+            ]
           },
           {
             "menuType": 3,
@@ -60,7 +81,14 @@
             "icon": "",
             "order": 10000,
             "access": "system:admin:user:delete",
-            "hideInMenu": 1
+            "hideInMenu": 1,
+            "api": [
+              {
+                "name": "删除管理员",
+                "api": "/api/v1/admin/menu/:id",
+                "method": "delete"
+              }
+            ]
           }
         ]
       },

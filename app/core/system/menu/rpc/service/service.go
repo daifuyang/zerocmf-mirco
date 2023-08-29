@@ -13,9 +13,15 @@ import (
 )
 
 type (
+	Api          = pb.Api
 	DeleteReq    = pb.DeleteReq
+	Menu         = pb.Menu
+	MenuApi      = pb.MenuApi
 	Response     = pb.Response
 	SaveReq      = pb.SaveReq
+	SaveResp     = pb.SaveResp
+	ShowReq      = pb.ShowReq
+	ShowResp     = pb.ShowResp
 	TreeList     = pb.TreeList
 	TreeListReq  = pb.TreeListReq
 	TreeListResp = pb.TreeListResp
@@ -23,8 +29,10 @@ type (
 	Service interface {
 		// 获取菜单
 		TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error)
+		// 获取单个菜单
+		Show(ctx context.Context, in *ShowReq, opts ...grpc.CallOption) (*ShowResp, error)
 		// 保存菜单
-		Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
+		Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*SaveResp, error)
 		// 删除菜单
 		Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
 	}
@@ -46,8 +54,14 @@ func (m *defaultService) TreeList(ctx context.Context, in *TreeListReq, opts ...
 	return client.TreeList(ctx, in, opts...)
 }
 
+// 获取单个菜单
+func (m *defaultService) Show(ctx context.Context, in *ShowReq, opts ...grpc.CallOption) (*ShowResp, error) {
+	client := pb.NewServiceClient(m.cli.Conn())
+	return client.Show(ctx, in, opts...)
+}
+
 // 保存菜单
-func (m *defaultService) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultService) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*SaveResp, error) {
 	client := pb.NewServiceClient(m.cli.Conn())
 	return client.Save(ctx, in, opts...)
 }

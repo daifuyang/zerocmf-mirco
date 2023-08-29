@@ -22,7 +22,8 @@ var (
 	adminMenuRowsExpectAutoSet   = strings.Join(stringx.Remove(adminMenuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	adminMenuRowsWithPlaceHolder = strings.Join(stringx.Remove(adminMenuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
-	cacheAdminMenuIdPrefix = "cache:adminMenu:id:"
+	cacheAdminMenuIdPrefix   = "cache:adminMenu:id:"
+	cacheAdminMenuNamePrefix = "cache:adminMenu:name:"
 )
 
 type (
@@ -36,6 +37,7 @@ type (
 		Count(ctx context.Context) (int64, error)
 		Insert(ctx context.Context, data *AdminMenu) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*AdminMenu, error)
+		FindOneByName(ctx context.Context, name string) (*AdminMenu, error)
 		Update(ctx context.Context, data *AdminMenu) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -67,7 +69,7 @@ type (
 		Link       int64     `db:"link"`         // 是否外链：0：否，1：是
 		Order      float64   `db:"order"`        // 排序，越大越靠前
 		HideInMenu int64     `db:"hide_in_menu"` // 菜单中隐藏
-		Status     int64     `db:"status"`       // 1 =>启用; 0 => 停用
+		Status     int64     `db:"status"`       // 1 =>启用,0 => 停用
 	}
 )
 
@@ -106,11 +108,17 @@ func (m *defaultAdminMenuModel) OrderBy(orderBy string) *defaultAdminMenuModel {
 	return m
 }
 func (m *defaultAdminMenuModel) Delete(ctx context.Context, id int64) error {
+	data, err := m.FindOne(ctx, id)
+	if err != nil {
+		return err
+	}
+
 	adminMenuIdKey := fmt.Sprintf("%s%v", cacheAdminMenuIdPrefix, id)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
+	adminMenuNameKey := fmt.Sprintf("%s%v", cacheAdminMenuNamePrefix, data.Name)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.ExecCtx(ctx, query, id)
-	}, adminMenuIdKey)
+	}, adminMenuIdKey, adminMenuNameKey)
 	return err
 }
 
@@ -131,21 +139,48 @@ func (m *defaultAdminMenuModel) FindOne(ctx context.Context, id int64) (*AdminMe
 	}
 }
 
+func (m *defaultAdminMenuModel) FindOneByName(ctx context.Context, name string) (*AdminMenu, error) {
+	adminMenuNameKey := fmt.Sprintf("%s%v", cacheAdminMenuNamePrefix, name)
+	var resp AdminMenu
+	err := m.QueryRowIndexCtx(ctx, &resp, adminMenuNameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where `name` = ? AND deleted_at = 0 limit 1", adminMenuRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, name); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultAdminMenuModel) Insert(ctx context.Context, data *AdminMenu) (sql.Result, error) {
 	adminMenuIdKey := fmt.Sprintf("%s%v", cacheAdminMenuIdPrefix, data.Id)
+	adminMenuNameKey := fmt.Sprintf("%s%v", cacheAdminMenuNamePrefix, data.Name)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, adminMenuRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.ParentId, data.UserId, data.FormId, data.DeletedAt, data.MenuType, data.Name, data.Icon, data.Path, data.Component, data.Access, data.Link, data.Order, data.HideInMenu, data.Status)
-	}, adminMenuIdKey)
+	}, adminMenuIdKey, adminMenuNameKey)
 	return ret, err
 }
 
-func (m *defaultAdminMenuModel) Update(ctx context.Context, data *AdminMenu) error {
+func (m *defaultAdminMenuModel) Update(ctx context.Context, newData *AdminMenu) error {
+	data, err := m.FindOne(ctx, newData.Id)
+	if err != nil {
+		return err
+	}
+
 	adminMenuIdKey := fmt.Sprintf("%s%v", cacheAdminMenuIdPrefix, data.Id)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
+	adminMenuNameKey := fmt.Sprintf("%s%v", cacheAdminMenuNamePrefix, data.Name)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (json sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, adminMenuRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.ParentId, data.UserId, data.FormId, data.DeletedAt, data.MenuType, data.Name, data.Icon, data.Path, data.Component, data.Access, data.Link, data.Order, data.HideInMenu, data.Status, data.Id)
-	}, adminMenuIdKey)
+		return conn.ExecCtx(ctx, query, newData.ParentId, newData.UserId, newData.FormId, newData.DeletedAt, newData.MenuType, newData.Name, newData.Icon, newData.Path, newData.Component, newData.Access, newData.Link, newData.Order, newData.HideInMenu, newData.Status, newData.Id)
+	}, adminMenuIdKey, adminMenuNameKey)
 	return err
 }
 

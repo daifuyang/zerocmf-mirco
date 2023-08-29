@@ -10,8 +10,8 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Config
-	SystemAdminRpc service.Service
+	Config        config.Config
+	SystemMenuRpc service.Service
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -34,7 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	})
 	return &ServiceContext{
-		Config:         c,
-		SystemAdminRpc: service.NewService(zrpc.MustNewClient(c.SystemMenuRpc)),
+		Config:        c,
+		SystemMenuRpc: service.NewService(zrpc.MustNewClient(c.SystemMenuRpc)),
 	}
 }

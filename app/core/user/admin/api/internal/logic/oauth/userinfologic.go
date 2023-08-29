@@ -31,14 +31,14 @@ func NewUserInfoLogic(header *http.Request, svcCtx *svc.ServiceContext) *UserInf
 func (l *UserInfoLogic) UserInfo() (resp logic.Response) {
 	r := l.header
 	userId := r.Header.Get("X-User-ID")
-	userModel := l.svcCtx.UserAdminRpc
+	userAdminRpc := l.svcCtx.UserAdminRpc
 	userIdInt, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		resp.Error("用户id格式化失败：", err.Error())
 		return
 	}
 
-	user, userErr := userModel.AdminShow(l.ctx, &userAdmin.AdminShowReq{UserId: userIdInt})
+	user, userErr := userAdminRpc.AdminShow(l.ctx, &userAdmin.AdminShowReq{UserId: userIdInt})
 	if userErr != nil {
 		resp.Error("user rpc adminShow err：", userErr.Error())
 		return

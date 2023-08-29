@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Service_TreeList_FullMethodName = "/core.system.menu.rpc.v1.Service/TreeList"
+	Service_Show_FullMethodName     = "/core.system.menu.rpc.v1.Service/Show"
 	Service_Save_FullMethodName     = "/core.system.menu.rpc.v1.Service/Save"
 	Service_Delete_FullMethodName   = "/core.system.menu.rpc.v1.Service/Delete"
 )
@@ -30,8 +31,10 @@ const (
 type ServiceClient interface {
 	// 获取菜单
 	TreeList(ctx context.Context, in *TreeListReq, opts ...grpc.CallOption) (*TreeListResp, error)
+	// 获取单个菜单
+	Show(ctx context.Context, in *ShowReq, opts ...grpc.CallOption) (*ShowResp, error)
 	// 保存菜单
-	Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
+	Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*SaveResp, error)
 	// 删除菜单
 	Delete(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error)
 }
@@ -53,8 +56,17 @@ func (c *serviceClient) TreeList(ctx context.Context, in *TreeListReq, opts ...g
 	return out, nil
 }
 
-func (c *serviceClient) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *serviceClient) Show(ctx context.Context, in *ShowReq, opts ...grpc.CallOption) (*ShowResp, error) {
+	out := new(ShowResp)
+	err := c.cc.Invoke(ctx, Service_Show_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) Save(ctx context.Context, in *SaveReq, opts ...grpc.CallOption) (*SaveResp, error) {
+	out := new(SaveResp)
 	err := c.cc.Invoke(ctx, Service_Save_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +89,10 @@ func (c *serviceClient) Delete(ctx context.Context, in *SaveReq, opts ...grpc.Ca
 type ServiceServer interface {
 	// 获取菜单
 	TreeList(context.Context, *TreeListReq) (*TreeListResp, error)
+	// 获取单个菜单
+	Show(context.Context, *ShowReq) (*ShowResp, error)
 	// 保存菜单
-	Save(context.Context, *SaveReq) (*Response, error)
+	Save(context.Context, *SaveReq) (*SaveResp, error)
 	// 删除菜单
 	Delete(context.Context, *SaveReq) (*Response, error)
 	mustEmbedUnimplementedServiceServer()
@@ -91,7 +105,10 @@ type UnimplementedServiceServer struct {
 func (UnimplementedServiceServer) TreeList(context.Context, *TreeListReq) (*TreeListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TreeList not implemented")
 }
-func (UnimplementedServiceServer) Save(context.Context, *SaveReq) (*Response, error) {
+func (UnimplementedServiceServer) Show(context.Context, *ShowReq) (*ShowResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Show not implemented")
+}
+func (UnimplementedServiceServer) Save(context.Context, *SaveReq) (*SaveResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
 }
 func (UnimplementedServiceServer) Delete(context.Context, *SaveReq) (*Response, error) {
@@ -124,6 +141,24 @@ func _Service_TreeList_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).TreeList(ctx, req.(*TreeListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_Show_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).Show(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_Show_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).Show(ctx, req.(*ShowReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -174,6 +209,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TreeList",
 			Handler:    _Service_TreeList_Handler,
+		},
+		{
+			MethodName: "Show",
+			Handler:    _Service_Show_Handler,
 		},
 		{
 			MethodName: "Save",

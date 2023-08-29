@@ -8,9 +8,7 @@ message Response {
   string message = 2;
 }
 
-message TreeListReq {
-
-}
+message TreeListReq {}
 
 message treeList {
   int64 id = 1;
@@ -32,14 +30,74 @@ message treeList {
   repeated treeList routes = 17;
 }
 
+message ShowReq {
+  int64 menuId = 1;
+}
+
+message api {
+  string name = 1;
+  string api = 2;
+  string method = 3;
+  string desc = 4;
+}
+
+message menu {
+  int64 id = 1;
+  int64 parentId = 2;
+  int64 userId = 3;
+  string formId = 4;
+  int64 menuType = 5;
+  string name = 6;
+  string icon = 7;
+  string path = 8;
+  string component = 9;
+  string access = 10;
+  int64 link = 11;
+  double order = 12;
+  int64 hideInMenu = 13;
+  int64 status = 14;
+  int64 createdAt = 15;
+  string createTime = 16;
+  repeated api apiList = 17;
+}
+
+message ShowResp {
+  bool success = 1;
+  string message = 2;
+  menu data = 3;
+}
+
 message TreeListResp {
   bool success = 1;
   string message = 2;
   repeated treeList data = 3;
 }
 
-message SaveReq {
+message MenuApi {
+  string name = 1;
+  string api = 2;
+  string method = 3;
+  optional string desc = 4;
+}
 
+message SaveReq {
+  int64 id = 1;
+  int64 parent_id = 2;
+  int64 menu_type = 3;
+  string name = 4;
+  fixed64 order = 5;
+  string path = 6;
+  int64 hide_in_menu = 7;
+  int64 status = 8;
+  repeated MenuApi api_list = 9;
+  string component = 10;
+  string access = 11;
+}
+
+message SaveResp {
+  bool success = 1;
+  string message = 2;
+  SaveReq data = 3;
 }
 
 message DeleteReq {
@@ -52,8 +110,11 @@ service Service {
   //  获取菜单
   rpc TreeList(TreeListReq) returns (TreeListResp);
 
+  // 获取单个菜单
+  rpc Show(ShowReq) returns (ShowResp);
+
   //  保存菜单
-  rpc Save(SaveReq) returns (Response);
+  rpc Save(SaveReq) returns (SaveResp);
 
   //  删除菜单
   rpc Delete(SaveReq) returns (Response);

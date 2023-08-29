@@ -12,16 +12,16 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetTreesLogic struct {
+type ShowLogic struct {
 	logx.Logger
 	ctx    context.Context
 	header *http.Request
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetTreesLogic(header *http.Request, svcCtx *svc.ServiceContext) *GetTreesLogic {
+func NewShowLogic(header *http.Request, svcCtx *svc.ServiceContext) *ShowLogic {
 	ctx := header.Context()
-	return &GetTreesLogic{
+	return &ShowLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		header: header,
@@ -29,18 +29,19 @@ func NewGetTreesLogic(header *http.Request, svcCtx *svc.ServiceContext) *GetTree
 	}
 }
 
-func (l *GetTreesLogic) GetTrees(req *types.MenusTreeReq) (resp logic.Response) {
-	list, err := l.svcCtx.SystemMenuRpc.TreeList(l.ctx, &pb.TreeListReq{})
+func (l *ShowLogic) Show(req *types.MenuShowReq) (resp logic.Response) {
+	adminMenuRpc := l.svcCtx.SystemMenuRpc
+	show, err := adminMenuRpc.Show(l.ctx, &pb.ShowReq{MenuId: req.Id})
 	if err != nil {
-		resp.Error("系统错误！", err.Error())
+		resp.Error("获取失败！", err.Error())
 		return
 	}
 
-	if !list.Success {
-		resp.Error(list.Message, nil)
+	if !show.Success {
+		resp.Error(show.Message, nil)
 		return
 	}
 
-	resp.Success("获取成功！", list.Data)
+	resp.Success(show.Message, show.Data)
 	return
 }

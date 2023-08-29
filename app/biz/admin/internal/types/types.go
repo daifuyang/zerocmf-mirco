@@ -3,3 +3,28 @@ package types
 
 type MenusTreeReq struct {
 }
+
+type MenuShowReq struct {
+	Id int64 `path:"id"`
+}
+
+type MenuApiReq struct {
+	Name   string `json:"name"`
+	API    string `json:"api"`
+	Method string `json:"method"`
+	Desc   string `json:"desc,optional"`
+}
+
+type MenuSaveReq struct {
+	Id         int64        `path:"id,optional"`
+	ParentID   int          `json:"parentId"`
+	MenuType   int          `json:"menuType"`
+	Name       string       `json:"name"`
+	Order      int          `json:"order"`
+	Path       string       `json:"path,optional"`
+	HideInMenu int          `json:"hideInMenu,optional"`
+	Status     int          `json:"status,optional"`
+	APIList    []MenuApiReq `json:"apiList"`
+	Component  string       `json:"component,optional"`
+	Access     string       `json:"access"`
+}

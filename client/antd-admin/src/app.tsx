@@ -67,7 +67,7 @@ function processRoutes(routes = []) {
         <React.Suspense
           fallback={
             <Spin spinning={true}>
-              <div style={{ width: '100%', height: '100vh' }}></div>
+              <div style={{ width: '100%', paddingTop: '30%' }}></div>
             </Spin>
           }
         >
